@@ -17,9 +17,11 @@ GLuint Create_Basic_Shader()
         "layout(location = 1) in vec2 aTexCoord;\n"
         "out vec2 TexCoord;\n"
         "uniform vec2 u_Offset;\n"
+        "uniform mat4 u_Projection;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.x + u_Offset.x, aPos.y + u_Offset.y, aPos.z, 1.0);\n"
+        "   vec4 WorldPos = vec4(aPos.x + u_Offset.x, aPos.y + u_Offset.y, aPos.z, 1.0);\n"
+        "   gl_Position = u_Projection * WorldPos;\n"
         "   TexCoord = aTexCoord;\n"
         "}\0";
 
@@ -70,7 +72,7 @@ bool Init_OpenGL(HWND hwnd)
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 32;
-    pfd.cDepthBits = 24;
+    pfd.cDepthBits = 0;
     pfd.iLayerType = PFD_MAIN_PLANE;
 
     int pixel_Format = ChoosePixelFormat(hdc, &pfd);
@@ -119,6 +121,19 @@ LRESULT CALLBACK Window_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+void Create_Orthographic_Matrix(float* matrix, float left, float right, float bottom, float top){
+    for (int i = 0; i < 16; i++) {
+        matrix[i] = 0.0f;
+    }
+
+    matrix[0] = 2.0f / (right - left);
+    matrix[5] = 2.0f / (top - bottom);
+    matrix[10] = -1.0f;
+    matrix[12] = -(right + left) / (right - left);
+    matrix[13] = -(top + bottom) / (top - bottom);
+    matrix[15] = 1.0f;
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
     Player player;
@@ -156,13 +171,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     GLuint shaderProgram = Create_Basic_Shader();
 
     float vertices[] = {
-        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-
-        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f};
+        100.0f,  100.0f, 0.0f,          1.0f, 1.0f,
+        100.0f,    0.0f, 0.0f,          1.0f, 0.0f,
+          0.0f,    0.0f, 0.0f,          0.0f, 0.0f,
+          0.0f,  100.0f, 0.0f,          0.0f, 1.0
+    };
 
     GLuint VAO, VBO;
     glGenVertexArrays(1, &VAO);
@@ -269,6 +282,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        float orthoMatrix[16];
+
+        Create_Orthographic_Matrix(orthoMatrix, 0.0f, 800.0f, 0.0f, 600.0f);
+
+        GLint projLocation = glGetUniformLocation(shaderProgram, "u_Projection");
+        glUniformMatrix4fv(projLocation, 1, GL_FALSE, orthoMatrix);
 
         GLint offsetLocation = glGetUniformLocation(shaderProgram, "u_Offset");
 

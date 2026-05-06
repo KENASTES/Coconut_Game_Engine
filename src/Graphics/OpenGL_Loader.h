@@ -31,6 +31,7 @@ typedef void (APIENTRY *PFNGLACTIVETEXTUREPROC)(GLenum texture);
 typedef GLint (APIENTRY *PFNGLGETUNIFORMLOCATIONPROC)(GLuint program, const GLchar *name);
 typedef void (APIENTRY *PFNGLUNIFORM1IPROC)(GLint location, GLint v0);
 typedef void (APIENTRY *PFNGLUNIFORM2FPROC)(GLint location, GLfloat v0, GLfloat v1);
+typedef void (APIENTRY *PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
 
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
@@ -50,5 +51,6 @@ extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLUNIFORM2FPROC glUniform2f;
+extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 
 bool Load_Modern_OpenGL();

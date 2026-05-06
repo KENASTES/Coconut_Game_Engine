@@ -11,4 +11,4 @@ void Player::Update_Logic(double Delta_Time)
         Player_Position_X -= Player_Movement_Speed * Delta_Time;
     if (Input::Is_Key_Pressed('D'))
         Player_Position_X += Player_Movement_Speed * Delta_Time;
-}
+};

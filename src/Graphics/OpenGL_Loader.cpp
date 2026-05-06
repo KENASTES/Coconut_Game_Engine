@@ -18,6 +18,7 @@ PFNGLACTIVETEXTUREPROC glActiveTexture = NULL;
 PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = NULL;
 PFNGLUNIFORM1IPROC glUniform1i = NULL;
 PFNGLUNIFORM2FPROC glUniform2f = NULL;
+PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = NULL;
 
 bool Load_Modern_OpenGL()
 {
@@ -39,6 +40,8 @@ bool Load_Modern_OpenGL()
     glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)wglGetProcAddress("glGetUniformLocation");
     glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
     glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
+    glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
+
 
     if (!glGenBuffers || !glGenVertexArrays || !glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram || !glAttachShader || !glLinkProgram || !glUseProgram) {
         MessageBox(NULL, "Failed to load Modern OpenGL! GPU might not support it.", "Loader Error", MB_OK);
