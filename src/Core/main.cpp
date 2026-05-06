@@ -45,10 +45,27 @@ GLuint Create_Basic_Shader()
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
 
+    GLint success;
+    char InfoLog[512];
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+    if (!success)
+    {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, InfoLog);
+        MessageBox(NULL, InfoLog, "Shader Compilation Error", MB_OK);
+    }
+
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, InfoLog);
+        MessageBox(NULL, InfoLog, "Shader Linking Error", MB_OK);
+    }
 
     return shaderProgram;
 }
