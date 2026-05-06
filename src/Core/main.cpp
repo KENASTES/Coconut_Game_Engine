@@ -126,6 +126,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         return 0;
     }
 
+    GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
+    Sprite_Renderer.Set_Shader(Shader_Program);
+
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -212,20 +215,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         glClearColor(0.1f, 0.2f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        glUseProgram(Shader_Program);
 
         float orthoMatrix[16];
 
         Create_Orthographic_Matrix(orthoMatrix, 0.0f, 800.0f, 0.0f, 600.0f);
 
-        GLint projLocation = glGetUniformLocation(shaderProgram, "u_Projection");
+        GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
         glUniformMatrix4fv(projLocation, 1, GL_FALSE, orthoMatrix);
 
-        GLint offsetLocation = glGetUniformLocation(shaderProgram, "u_Offset");
-
+        GLint offsetLocation = glGetUniformLocation(Shader_Program, "u_Offset");
         glUniform2f(offsetLocation, player.Player_Position_X, player.Player_Position_Y);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glUniform1i(glGetUniformLocation(Shader_Program, "u_Texture"), 0);
+
+        Sprite_Renderer.Draw();
 
         SwapBuffers(hdc);
     }

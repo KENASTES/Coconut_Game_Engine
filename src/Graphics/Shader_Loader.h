@@ -9,5 +9,6 @@
 #include <string>
 
 std::string Load_Shader_Source(const char* File_Path);
+GLuint Load_And_Compile_Shader(const char *Vertex_Path, const char *Fragment_Path);
 
 #endif

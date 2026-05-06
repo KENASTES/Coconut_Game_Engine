@@ -20,6 +20,6 @@ class Sprite_Renderer {
 
     void Set_Shader(GLuint shaderID);
     void Draw();
-}
+};
 
 #endif
