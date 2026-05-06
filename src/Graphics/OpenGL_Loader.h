@@ -10,6 +10,9 @@ typedef char GLchar;
 #define GL_VERTEX_SHADER   0x8B31
 #define GL_FRAGMENT_SHADER 0x8B30
 #define GL_TEXTURE0 0x84C0
+#ifndef GL_ELEMENT_ARRAY_BUFFER
+#define GL_ELEMENT_ARRAY_BUFFER 0x8893
+#endif
 
 typedef ptrdiff_t GLsizeiptr;
 
@@ -32,6 +35,9 @@ typedef GLint (APIENTRY *PFNGLGETUNIFORMLOCATIONPROC)(GLuint program, const GLch
 typedef void (APIENTRY *PFNGLUNIFORM1IPROC)(GLint location, GLint v0);
 typedef void (APIENTRY *PFNGLUNIFORM2FPROC)(GLint location, GLfloat v0, GLfloat v1);
 typedef void (APIENTRY *PFNGLUNIFORMMATRIX4FVPROC)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+typedef void (APIENTRY * PFNGLDELETESHADERPROC) (GLuint);
+typedef void (APIENTRY * PFNGLDELETEVERTEXARRAYSPROC) (GLsizei n, const GLuint *arrays);
+typedef void (APIENTRY * PFNGLDELETEBUFFERSPROC) (GLsizei n, const GLuint *buffers);
 
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
@@ -52,5 +58,8 @@ extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLUNIFORM2FPROC glUniform2f;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+extern PFNGLDELETESHADERPROC glDeleteShader;
+extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
+extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 
 bool Load_Modern_OpenGL();

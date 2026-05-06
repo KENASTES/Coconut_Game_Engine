@@ -1,8 +1,8 @@
 #ifndef SPRITE_RENDERER_H
 #define SPRITE_RENDERER_H
 
-#include "glad/glad.h"
-
+#include <GL/gl.h>
+#include "OpenGL_Loader.h"
 
 struct Vertex {
     float Position[3];

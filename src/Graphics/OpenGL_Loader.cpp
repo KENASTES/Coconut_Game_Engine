@@ -19,6 +19,9 @@ PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = NULL;
 PFNGLUNIFORM1IPROC glUniform1i = NULL;
 PFNGLUNIFORM2FPROC glUniform2f = NULL;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = NULL;
+PFNGLDELETESHADERPROC glDeleteShader = NULL;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;
+PFNGLDELETEBUFFERSPROC glDeleteBuffers = NULL;
 
 bool Load_Modern_OpenGL()
 {
@@ -41,9 +44,11 @@ bool Load_Modern_OpenGL()
     glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
     glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");
     glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
+    glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
+    glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
+    glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
 
-
-    if (!glGenBuffers || !glGenVertexArrays || !glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram || !glAttachShader || !glLinkProgram || !glUseProgram) {
+    if (!glGenBuffers || !glGenVertexArrays || !glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram || !glAttachShader || !glLinkProgram || !glUseProgram || !glDeleteShader  || !glBindBuffer || !glBufferData || !glBindVertexArray || !glEnableVertexAttribArray || !glVertexAttribPointer || !glActiveTexture || !glGetUniformLocation || !glUniform1i || !glUniform2f || !glUniformMatrix4fv) {
         MessageBox(NULL, "Failed to load Modern OpenGL! GPU might not support it.", "Loader Error", MB_OK);
         return false;
     }

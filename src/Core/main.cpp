@@ -127,7 +127,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     }
 
     GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
-    Sprite_Renderer.Set_Shader(Shader_Program);
+    
+    Sprite_Renderer sprite_Renderer;
+    sprite_Renderer.Set_Shader(Shader_Program);
 
     GLuint texture;
     glGenTextures(1, &texture);
@@ -229,7 +231,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(glGetUniformLocation(Shader_Program, "u_Texture"), 0);
 
-        Sprite_Renderer.Draw();
+        sprite_Renderer.Draw();
 
         SwapBuffers(hdc);
     }
