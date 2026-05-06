@@ -8,67 +8,8 @@
 #include "OpenGL_Loader.h"
 #include <Input.h>
 #include <Player.h>
-
-GLuint Create_Basic_Shader()
-{
-    const char *vertexShaderSource =
-        "#version 330 core\n"
-        "layout(location = 0) in vec3 aPos;\n"
-        "layout(location = 1) in vec2 aTexCoord;\n"
-        "out vec2 TexCoord;\n"
-        "uniform vec2 u_Offset;\n"
-        "uniform mat4 u_Projection;\n"
-        "void main()\n"
-        "{\n"
-        "   vec4 WorldPos = vec4(aPos.x + u_Offset.x, aPos.y + u_Offset.y, aPos.z, 1.0);\n"
-        "   gl_Position = u_Projection * WorldPos;\n"
-        "   TexCoord = aTexCoord;\n"
-        "}\0";
-
-    const char *fragmentShaderSource =
-        "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "in vec2 TexCoord;\n"
-        "uniform sampler2D ourTexture;\n"
-        "void main()\n"
-        "{\n"
-        "   vec4 texColor = texture(ourTexture, TexCoord);\n"
-        "   if(texColor.a < 0.1) discard;\n"
-        "   FragColor = texColor;\n"
-        "}\0";
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    GLint success;
-    char InfoLog[512];
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-    if (!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, InfoLog);
-        MessageBox(NULL, InfoLog, "Shader Compilation Error", MB_OK);
-    }
-
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, InfoLog);
-        MessageBox(NULL, InfoLog, "Shader Linking Error", MB_OK);
-    }
-
-    return shaderProgram;
-}
+#include "Sprite_Renderer.h"
+#include "Shader_Loader.h"
 
 HDC hdc;
 HGLRC hrc;
@@ -184,33 +125,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     {
         return 0;
     }
-
-    GLuint shaderProgram = Create_Basic_Shader();
-
-    float vertices[] = {
-        100.0f,  100.0f, 0.0f,          1.0f, 1.0f,
-        100.0f,    0.0f, 0.0f,          1.0f, 0.0f,
-          0.0f,    0.0f, 0.0f,          0.0f, 0.0f,
-          0.0f,  100.0f, 0.0f,          0.0f, 1.0
-    };
-
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 
     GLuint texture;
     glGenTextures(1, &texture);

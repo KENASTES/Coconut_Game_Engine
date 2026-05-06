@@ -12,7 +12,7 @@ Sprite_Renderer::Sprite_Renderer() {
     unsigned int indices[] = {
         0, 1, 2,
         1, 2, 3
-    }
+    };
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -38,23 +38,17 @@ Sprite_Renderer::Sprite_Renderer() {
 
 void Sprite_Renderer::Set_Shader(GLuint shaderID) {
     Current_Shader_ID = shaderID;
-}
+};
 
 void Sprite_Renderer::Draw() {
     glUseProgram(Current_Shader_ID);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
-}
-
-void Sprite_Renderer::Draw() {
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
+};
 
 Sprite_Renderer::~Sprite_Renderer() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-}
+};
