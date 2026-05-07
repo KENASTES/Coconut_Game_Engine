@@ -1,14 +1,6 @@
-#include <Player.h>
-#include <Input.h>
+#include "Player.h"
+#include "../Core/Input.h"
 #include <math.h>
-
-bool Check_Collision(float x1, float y1, float w1, float h1,
-                     float x2, float y2, float w2, float h2)
-{
-    bool Collision_X = x1 < x2 + w2 && x1 + w1 > x2;
-    bool Collision_Y = y1 < y2 + h2 && y1 + h1 > y2;
-    return Collision_X && Collision_Y;
-}
 
 Player::Player() : Game_Object()
 {
@@ -29,7 +21,8 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
 
     for (auto &obj : Game_World)
     {
-        if (Check_Collision(Position_X, Position_Y, Width, Height, obj.Position_X, obj.Position_Y, obj.Width, obj.Height))
+
+        if (this->Check_Collision(obj)) 
         {
             Position_Y = Old_Position_Y;
             break;
@@ -45,7 +38,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
 
     for (auto &obj : Game_World)
     {
-        if (Check_Collision(Position_X, Position_Y, Width, Height, obj.Position_X, obj.Position_Y, obj.Width, obj.Height))
+        if (this->Check_Collision(obj))
         {
             Position_X = Old_Position_X;
             break;

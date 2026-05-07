@@ -10,6 +10,13 @@ Game_Object::Game_Object(float Position_X, float Position_Y, float Width, float 
     Update_Model_Matrix();
 }
 
+bool Game_Object::Check_Collision(const Game_Object& other) const {
+    bool Collision_X = this->Position_X < other.Position_X + other.Width && 
+                       this->Position_X + this->Width > other.Position_X;
+    bool Collision_Y = this->Position_Y < other.Position_Y + other.Height && 
+                       this->Position_Y + this->Height > other.Position_Y;
+    return Collision_X && Collision_Y;}
+
 void Game_Object::Update_Model_Matrix() {
     Render_Math::Create_Model_Matrix(Model_Matrix, Position_X, Position_Y, Rotation, Width, Height);
 }

@@ -18,6 +18,10 @@ class Game_Object {
     Game_Object();
     Game_Object(float Position_X, float Position_Y, float Width, float Height, float Rotation, Texture_2D Sprite);
 
+    virtual ~Game_Object() = default;
+    
+    bool Check_Collision(const Game_Object& other) const;
+
     virtual void Update_Model_Matrix();
     virtual void Draw(Sprite_Renderer& renderer, GLuint shaderID);
 };
