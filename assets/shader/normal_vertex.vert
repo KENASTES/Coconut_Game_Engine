@@ -4,7 +4,7 @@ layout(location = 1) in vec2 aTexCoord;
 
 out vec2 TexCoord;
 
-uniform vec2 u_Model;
+uniform mat4 u_Model;
 uniform mat4 u_Projection;
 
 void main()

@@ -34,7 +34,7 @@ namespace Render_Math
         Matrix[10] = 1.0f;       
         Matrix[12] = Pos_X;       
         Matrix[13] = Pos_Y;       
-        Matrix[15] = 1.0f;       
+        Matrix[15] = 1.0f;
     }
 }
 
