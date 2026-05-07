@@ -23,30 +23,6 @@ extern "C"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
-    const char CLASS_NAME[] = "MyEngineWindowClass";
-
-    WNDCLASS wc = {};
-    wc.style = CS_OWNDC;
-    wc.lpfnWndProc = Window_Interaction::Window_Proc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = CLASS_NAME;
-
-    RegisterClass(&wc);
-
-    HWND hwnd = CreateWindowEx(
-        0,
-        CLASS_NAME,
-        "My Custom Game Engine",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 1200, 720,
-        NULL,
-        NULL,
-        hInstance,
-        NULL);
-
-    if (hwnd == NULL)
-        return 0;
-
     Game_Window.Initialize(1200, 720, "My Custom Game Engine");
 
     if (!Load_Modern_OpenGL())
@@ -92,19 +68,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
     while (Game_Window.Process_Messages())
     {
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-            {
-                Game_Window.Set_Running(false);
-            }
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-
-        if (!Game_Window.Is_Running())
-            break;
-
         QueryPerformanceCounter(&time_End);
         Delta_Time = (double)(time_End.QuadPart - time_Start.QuadPart) / frequency.QuadPart;
         time_Start = time_End;
