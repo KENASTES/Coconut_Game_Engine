@@ -3,7 +3,7 @@ project(My_Custom_Game_Engine VERSION 1.0)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-include_directories(src src/Core src/Entities src/Graphics)
+include_directories(src src/Core src/Entities src/Graphics src/Utils)
 
 add_executable(engine ${SOURCES})
 

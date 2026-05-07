@@ -10,6 +10,7 @@
 #include <Player.h>
 #include "Sprite_Renderer.h"
 #include "Shader_Loader.h"
+#include "Sprite_Render_Math.h"
 
 HDC hdc;
 HGLRC hrc;
@@ -77,19 +78,6 @@ LRESULT CALLBACK Window_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
-
-void Create_Orthographic_Matrix(float* matrix, float left, float right, float bottom, float top){
-    for (int i = 0; i < 16; i++) {
-        matrix[i] = 0.0f;
-    }
-
-    matrix[0] = 2.0f / (right - left);
-    matrix[5] = 2.0f / (top - bottom);
-    matrix[10] = -1.0f;
-    matrix[12] = -(right + left) / (right - left);
-    matrix[13] = -(top + bottom) / (top - bottom);
-    matrix[15] = 1.0f;
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
@@ -221,13 +209,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
         float orthoMatrix[16];
 
-        Create_Orthographic_Matrix(orthoMatrix, 0.0f, 800.0f, 0.0f, 600.0f);
+        Render_Math::Create_Orthographic_Matrix(orthoMatrix, 0.0f, 800.0f, 0.0f, 600.0f);
+
+        player.Update_Model_Matrix();
 
         GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
         glUniformMatrix4fv(projLocation, 1, GL_FALSE, orthoMatrix);
 
-        GLint offsetLocation = glGetUniformLocation(Shader_Program, "u_Offset");
-        glUniform2f(offsetLocation, player.Player_Position_X, player.Player_Position_Y);
+        GLint modelLocation = glGetUniformLocation(Shader_Program, "u_Model");
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, player.Model_Matrix);
+
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(glGetUniformLocation(Shader_Program, "u_Texture"), 0);
 
