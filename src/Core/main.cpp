@@ -12,6 +12,7 @@
 #include "Sprite_Render_Math.h"
 #include "Resource_Manager.h"
 #include "Game_Object.h"
+#include "Time.h"
 
 Window_Interaction Game_Window;
 
@@ -60,17 +61,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     QueryPerformanceFrequency(&frequency);
     QueryPerformanceCounter(&time_Start);
 
-    double Delta_Time = 0.0;
     double Time_Elapsed = 0.0;
     int Frame_Count = 0;
 
     MSG msg = {};
+    
+    Time::Initialize();
 
     while (Game_Window.Process_Messages())
     {
-        QueryPerformanceCounter(&time_End);
-        Delta_Time = (double)(time_End.QuadPart - time_Start.QuadPart) / frequency.QuadPart;
-        time_Start = time_End;
+        Time::Update();
+        double Delta_Time = Time::Get_Delta_Time();
 
         Input::Update();
         player.Update_Logic(Delta_Time, Game_World);
