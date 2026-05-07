@@ -5,7 +5,7 @@
 
 std::map<std::string, Texture_2D> Resource_Manager::Textures;
 
-Texture_2D Resource_Manager::Load_Texture(const char* File_Path, std::string File_Name){
+Texture_2D Resource_Manager::Load_Texture(const char* File_Path, const std::string& File_Name){
     if (Textures.find(File_Name) != Textures.end()) {
         return Textures[File_Name];
     }
@@ -26,7 +26,7 @@ Texture_2D Resource_Manager::Load_Texture(const char* File_Path, std::string Fil
     return Textures[File_Name];
 }
 
-Texture_2D Resource_Manager::Get_Texture(std::string File_Name) {
+Texture_2D Resource_Manager::Get_Texture(const std::string& File_Name) {
     return Textures[File_Name];
 }
 
