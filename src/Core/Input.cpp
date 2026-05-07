@@ -13,6 +13,5 @@ namespace Input {
         }
 
         return (GetAsyncKeyState(Virtual_Key) & 0x8000) != 0;
-    
     }
 }

@@ -2,15 +2,13 @@
 #include <string>
 #include <GL/gl.h>
 #include <stddef.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#include "OpenGL_Loader.h"
 #include <Input.h>
 #include <Player.h>
+#include "OpenGL_Loader.h"
 #include "Sprite_Renderer.h"
 #include "Shader_Loader.h"
 #include "Sprite_Render_Math.h"
+#include "Resource_Manager.h"
 
 HDC hdc;
 HGLRC hrc;
@@ -114,33 +112,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         return 0;
     }
 
+    Resource_Manager::Load_Texture("assets/sprites/player.jpg", "player");
+
     GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
     
     Sprite_Renderer sprite_Renderer;
     sprite_Renderer.Set_Shader(Shader_Program);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    stbi_set_flip_vertically_on_load(true);
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("assets/sprites/player.jpg", &width, &height, &nrChannels, 0);
-
-    if (data)
-    {
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-    }
-    else
-    {
-        MessageBox(NULL, "Failed to load texture!", "Texture Error", MB_OK);
-    }
-
-    stbi_image_free(data);
 
     RECT rect;
     GetClientRect(hwnd, &rect);
@@ -220,7 +197,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, player.Model_Matrix);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        Resource_Manager::Get_Texture("player").Bind();
         glUniform1i(glGetUniformLocation(Shader_Program, "u_Texture"), 0);
 
         sprite_Renderer.Draw();
