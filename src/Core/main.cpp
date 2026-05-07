@@ -172,7 +172,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         time_Start = time_End;
 
         Input::Update(hwnd);
-        player.Update_Logic(Delta_Time);
+        player.Update_Logic(Delta_Time, Game_World);
 
         Frame_Count++;
         Time_Elapsed += Delta_Time;
