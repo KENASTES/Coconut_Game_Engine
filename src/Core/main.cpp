@@ -1,10 +1,11 @@
-#include <windows.h>
 #include <string>
 #include <GL/gl.h>
 #include <stddef.h>
 #include <Input.h>
 #include <Player.h>
 #include <vector>
+
+#include "Window_Interaction.h"
 #include "OpenGL_Loader.h"
 #include "Sprite_Renderer.h"
 #include "Shader_Loader.h"
@@ -12,8 +13,7 @@
 #include "Resource_Manager.h"
 #include "Game_Object.h"
 
-HDC hdc;
-HGLRC hrc;
+Window_Interaction Game_Window;
 
 extern "C"
 {
@@ -21,73 +21,13 @@ extern "C"
     __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
-bool Init_OpenGL(HWND hwnd)
-{
-    hdc = GetDC(hwnd);
-
-    PIXELFORMATDESCRIPTOR pfd = {};
-    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion = 1;
-    pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 32;
-    pfd.cDepthBits = 0;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-
-    int pixel_Format = ChoosePixelFormat(hdc, &pfd);
-    SetPixelFormat(hdc, pixel_Format, &pfd);
-    if (!pixel_Format)
-        return false;
-    if (!SetPixelFormat(hdc, pixel_Format, &pfd))
-        return false;
-
-    hrc = wglCreateContext(hdc);
-    wglMakeCurrent(hdc, hrc);
-    if (!hrc)
-        return false;
-    if (!wglMakeCurrent(hdc, hrc))
-        return false;
-
-    return true;
-}
-
-LRESULT CALLBACK Window_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_ERASEBKGND:
-        return 1;
-
-    case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        BeginPaint(hwnd, &ps);
-        EndPaint(hwnd, &ps);
-        return 0;
-    }
-
-    case WM_SIZE:
-        if (hrc)
-        {
-            glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));
-        }
-        return 0;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    }
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
-    Player player;
     const char CLASS_NAME[] = "MyEngineWindowClass";
 
     WNDCLASS wc = {};
     wc.style = CS_OWNDC;
-    wc.lpfnWndProc = Window_Proc;
+    wc.lpfnWndProc = Window_Interaction::Window_Proc;
     wc.hInstance = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
@@ -107,7 +47,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     if (hwnd == NULL)
         return 0;
 
-    Init_OpenGL(hwnd);
+    Game_Window.Initialize(1200, 720, "My Custom Game Engine");
 
     if (!Load_Modern_OpenGL())
     {
@@ -116,20 +56,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
     Resource_Manager::Load_Texture("assets/sprites/player.jpg", "player");
     Resource_Manager::Load_Texture("assets/sprites/Box.png", "box");
+    GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
 
+    Player player;
     std::vector<Game_Object> Game_World;
 
     Game_World.push_back(Game_Object(200.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
     Game_World.push_back(Game_Object(300.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
     Game_World.push_back(Game_Object(400.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
 
-    GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
-
     Sprite_Renderer sprite_Renderer;
     sprite_Renderer.Set_Shader(Shader_Program);
 
     RECT rect;
-    GetClientRect(hwnd, &rect);
+    GetClientRect(Game_Window.Get_HWND(), &rect);
     glViewport(0, 0, rect.right, rect.bottom);
 
     std::string gpuName = "Unknown GPU";
@@ -137,8 +77,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     if (rendererStr)
         gpuName = rendererStr;
 
-    ShowWindow(hwnd, nCmdShow);
-    UpdateWindow(hwnd);
+    ShowWindow(Game_Window.Get_HWND(), nCmdShow);
+    UpdateWindow(Game_Window.Get_HWND());
 
     LARGE_INTEGER frequency, time_Start, time_End;
     QueryPerformanceFrequency(&frequency);
@@ -148,30 +88,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     double Time_Elapsed = 0.0;
     int Frame_Count = 0;
 
-    bool isRunning = true;
-
     MSG msg = {};
 
-    while (isRunning)
+    while (Game_Window.Process_Messages())
     {
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             if (msg.message == WM_QUIT)
             {
-                isRunning = false;
+                Game_Window.Set_Running(false);
             }
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
 
-        if (!isRunning)
+        if (!Game_Window.Is_Running())
             break;
 
         QueryPerformanceCounter(&time_End);
         Delta_Time = (double)(time_End.QuadPart - time_Start.QuadPart) / frequency.QuadPart;
         time_Start = time_End;
 
-        Input::Update(hwnd);
+        Input::Update();
         player.Update_Logic(Delta_Time, Game_World);
 
         Frame_Count++;
@@ -183,7 +121,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
                                 " | Delta Time: " + std::to_string(Delta_Time) +
                                 "s | X: " + std::to_string(player.Position_X) +
                                 " | Y: " + std::to_string(player.Position_Y);
-            SetWindowText(hwnd, title.c_str());
+            SetWindowText(Game_Window.Get_HWND(), title.c_str());
             Frame_Count = 0;
             Time_Elapsed -= 1.0;
         }
@@ -216,7 +154,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
         sprite_Renderer.Draw();
 
-        SwapBuffers(hdc);
+        Game_Window.Swap_Buffers();
     }
     return 0;
 }

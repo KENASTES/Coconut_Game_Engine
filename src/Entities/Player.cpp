@@ -20,7 +20,7 @@ Player::Player() : Game_Object()
 
 void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_World)
 {
-    float Old_Position_X = Position_X;
+    float Old_Position_Y = Position_Y;
 
     if (Input::Is_Key_Pressed('W'))
         Position_Y += Player_Movement_Speed * Delta_Time;
@@ -31,12 +31,12 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
     {
         if (Check_Collision(Position_X, Position_Y, Width, Height, obj.Position_X, obj.Position_Y, obj.Width, obj.Height))
         {
-            Position_X = Old_Position_X;
+            Position_Y = Old_Position_Y;
             break;
         }
     }
 
-    float Old_Position_Y = Position_Y;
+    float Old_Position_X = Position_X;
 
     if (Input::Is_Key_Pressed('A'))
         Position_X -= Player_Movement_Speed * Delta_Time;
@@ -47,7 +47,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
     {
         if (Check_Collision(Position_X, Position_Y, Width, Height, obj.Position_X, obj.Position_Y, obj.Width, obj.Height))
         {
-            Position_Y = Old_Position_Y;
+            Position_X = Old_Position_X;
             break;
         }
     }

@@ -1,17 +1,18 @@
 #include <Input.h>
+#include <windows.h>
 
-namespace Input {
-    HWND Current_Window_Handle = NULL;
+bool Input::Keys_State[256] = {false};
 
-    void Update(HWND windowHandle) {
-        Current_Window_Handle = windowHandle;
+void Input::Update()
+{
+
+    for (int i = 0; i < 256; i++)
+    {
+        Keys_State[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
     }
+}
 
-    bool Is_Key_Pressed(int Virtual_Key) {
-        if (GetForegroundWindow() != Current_Window_Handle) {
-            return false;
-        }
-
-        return (GetAsyncKeyState(Virtual_Key) & 0x8000) != 0;
-    }
+bool Input::Is_Key_Pressed(int Virtual_Key)
+{
+    return Keys_State[Virtual_Key];
 }
