@@ -2,17 +2,14 @@
 #include <windows.h>
 
 bool Input::Keys_State[256] = {false};
-
-void Input::Update()
-{
-
-    for (int i = 0; i < 256; i++)
-    {
-        Keys_State[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
-    }
-}
+float Input::Mouse_Position_X = 0.0f;
+float Input::Mouse_Position_Y = 0.0f;
 
 bool Input::Is_Key_Pressed(int Virtual_Key)
 {
     return Keys_State[Virtual_Key];
+}
+
+bool Input::Is_Mouse_Left_Button_Clicked() {
+    return Keys_State[VK_LBUTTON];
 }
