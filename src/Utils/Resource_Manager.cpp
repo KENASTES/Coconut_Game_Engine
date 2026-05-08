@@ -1,6 +1,4 @@
 #include "Resource_Manager.h"
-
-#define STB_IMAGE_IMPLEMENTATION
 #include "../Graphics/stb_image.h"
 
 std::map<std::string, Texture_2D> Resource_Manager::Textures;
@@ -26,7 +24,7 @@ Texture_2D Resource_Manager::Load_Texture(const char* File_Path, const std::stri
     return Textures[File_Name];
 }
 
-Texture_2D Resource_Manager::Get_Texture(const std::string& File_Name) {
+Texture_2D& Resource_Manager::Get_Texture(const std::string& File_Name) {
     return Textures[File_Name];
 }
 

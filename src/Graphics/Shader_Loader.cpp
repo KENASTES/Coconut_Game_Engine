@@ -1,4 +1,8 @@
 #include "Shader_Loader.h"
+#include "OpenGL_Loader.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 std::string Load_Shader_Source(const char* File_Path) {
     std::string Shader_Content;
@@ -27,9 +31,24 @@ GLuint Load_And_Compile_Shader(const char *Vertex_Path, const char *Fragment_Pat
     glShaderSource(vertex, 1, &v_Shader_Code, NULL);
     glCompileShader(vertex);
 
+    int success;
+    char infoLog[512];
+
+    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+        std::cerr << "Vertex Shader Compilation Failed:\n" << infoLog << std::endl;
+    }
+
     GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &f_Shader_Code, NULL);
     glCompileShader(fragment);
+
+    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragment, 512, NULL, infoLog);
+        std::cerr << "Fragment Shader Compilation Failed:\n" << infoLog << std::endl;
+    }
 
     GLuint Shader_Program = glCreateProgram();
     glAttachShader(Shader_Program, vertex);

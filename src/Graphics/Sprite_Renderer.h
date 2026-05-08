@@ -12,13 +12,11 @@ struct Vertex {
 class Sprite_Renderer {
     private:
     GLuint VAO, VBO, EBO;
-    GLuint Current_Shader_ID;
 
     public:
     Sprite_Renderer();
     ~Sprite_Renderer();
 
-    void Set_Shader(GLuint shaderID);
     void Draw();
 };
 

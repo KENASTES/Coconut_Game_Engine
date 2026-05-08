@@ -43,7 +43,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     Game_World.push_back(Game_Object(400.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
 
     Sprite_Renderer sprite_Renderer;
-    sprite_Renderer.Set_Shader(Shader_Program);
 
     RECT rect;
     GetClientRect(Game_Window.Get_HWND(), &rect);

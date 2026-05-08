@@ -1,7 +1,7 @@
 #ifndef SPRITE_RENDER_MATH_H
 #define SPRITE_RENDER_MATH_H
 
-#include <math.h>
+#include <cmath>
 
 namespace Render_Math
 {
@@ -24,8 +24,8 @@ namespace Render_Math
         for (int i = 0; i < 16; i++) Matrix[i] = 0.0f;
         
         float Rad = Rotation_Deg * (3.14159265359f / 180.0f);
-        float Cos_Value = cos(Rad);
-        float Sin_Value = sin(Rad);
+        float Cos_Value = std::cos(Rad);
+        float Sin_Value = std::sin(Rad);
 
         Matrix[0]  = Scale_X * Cos_Value;  
         Matrix[1]  = Scale_X * Sin_Value;  

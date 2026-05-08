@@ -9,7 +9,7 @@ class Resource_Manager {
     public:
     static std::map<std::string, Texture_2D> Textures;
     static Texture_2D Load_Texture(const char* File_Path, const std::string& File_Name);
-    static Texture_2D Get_Texture(const std::string& File_Name);
+    static Texture_2D& Get_Texture(const std::string& File_Name);
     static void Clear();
 };
 

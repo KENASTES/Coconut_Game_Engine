@@ -36,12 +36,7 @@ Sprite_Renderer::Sprite_Renderer() {
     glBindVertexArray(0);
 };
 
-void Sprite_Renderer::Set_Shader(GLuint shaderID) {
-    Current_Shader_ID = shaderID;
-};
-
 void Sprite_Renderer::Draw() {
-    glUseProgram(Current_Shader_ID);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

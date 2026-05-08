@@ -22,6 +22,10 @@ PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = NULL;
 PFNGLDELETESHADERPROC glDeleteShader = NULL;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = NULL;
 PFNGLDELETEBUFFERSPROC glDeleteBuffers = NULL;
+PFNGLGETSHADERIVPROC glGetShaderiv = NULL;
+PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog = NULL;
+PFNGLGETPROGRAMIVPROC glGetProgramiv = NULL;
+PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = NULL;
 
 bool Load_Modern_OpenGL()
 {
@@ -47,8 +51,12 @@ bool Load_Modern_OpenGL()
     glDeleteShader = (PFNGLDELETESHADERPROC)wglGetProcAddress("glDeleteShader");
     glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
     glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
+    glGetShaderiv = (PFNGLGETSHADERIVPROC)wglGetProcAddress("glGetShaderiv");
+    glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)wglGetProcAddress("glGetShaderInfoLog");
+    glGetProgramiv = (PFNGLGETPROGRAMIVPROC)wglGetProcAddress("glGetProgramiv");
+    glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)wglGetProcAddress("glGetProgramInfoLog");
 
-    if (!glGenBuffers || !glGenVertexArrays || !glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram || !glAttachShader || !glLinkProgram || !glUseProgram || !glDeleteShader  || !glBindBuffer || !glBufferData || !glBindVertexArray || !glEnableVertexAttribArray || !glVertexAttribPointer || !glActiveTexture || !glGetUniformLocation || !glUniform1i || !glUniform2f || !glUniformMatrix4fv) {
+    if (!glGenBuffers || !glGenVertexArrays || !glCreateShader || !glShaderSource || !glCompileShader || !glCreateProgram || !glAttachShader || !glLinkProgram || !glUseProgram || !glDeleteShader  || !glBindBuffer || !glBufferData || !glBindVertexArray || !glEnableVertexAttribArray || !glVertexAttribPointer || !glActiveTexture || !glGetUniformLocation || !glUniform1i || !glUniform2f || !glUniformMatrix4fv || !glGetShaderiv || !glGetShaderInfoLog || !glGetProgramiv || !glGetProgramInfoLog) {
         MessageBox(NULL, "Failed to load Modern OpenGL! GPU might not support it.", "Loader Error", MB_OK);
         return false;
     }
