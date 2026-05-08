@@ -2,12 +2,12 @@
 #include "../Utils/Sprite_Render_Math.h"
 #include "../Core/Input.h"
 
-UI_Element::UI_Element(float Position_X, float Position_Y, float Width, float Height, const Texture_2D& Texture) {
-    Position_X = Position_X;
-    Position_Y = Position_Y;
-    Width = Width;
-    Height = Height;
-    Texture = Texture;
+UI_Element::UI_Element(float Position_X, float Position_Y, float Width, float Height, const Texture_2D& UI_Texture) {
+    this->Position_X = Position_X;
+    this->Position_Y = Position_Y;
+    this->Width = Width;
+    this->Height = Height;
+    this->Texture = UI_Texture;
     Update_UI_Matrix();
 };
 
@@ -20,7 +20,7 @@ bool UI_Element::Is_Mouse_Clicked(float Mouse_X, float Mouse_Y) const {
 }
 
 void UI_Element::Update_UI_Matrix() {
-    Sprite_Render_Math::Create_Model_Matrix( Model_Matrix, Position_X, Position_Y, Width, Height, 0.0f );
+    Render_Math::Create_Model_Matrix( Model_Matrix, Position_X, Position_Y, 0.0f, Width, Height);
 }
 
 void UI_Element::UI_Draw(Sprite_Renderer& Renderer, GLuint Shader_ID) {
