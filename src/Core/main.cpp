@@ -15,6 +15,8 @@
 #include "Time.h"
 #include "Camera_Projection.h"
 #include "UI_Element.h"
+#include "System_Utility.h"
+#include "Asset_Loader.h"
 
 Window_Interaction Game_Window;
 
@@ -33,9 +35,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         return 0;
     }
 
-    Resource_Manager::Load_Texture("assets/sprites/player.jpg", "player");
-    Resource_Manager::Load_Texture("assets/sprites/Box.png", "box");
-    GLuint Shader_Program = Load_And_Compile_Shader("assets/shader/normal_vertex.vert", "assets/shader/normal_fragment.frag");
+    GLuint Shader_Program;
+    Asset_Loader::Load_Initial_Assets(Shader_Program);
 
     Player player;
     std::vector<Game_Object> Game_World;
@@ -81,13 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         GetCursorPos(&mouse_Pt);
         ScreenToClient(Game_Window.Get_HWND(), &mouse_Pt);
         double Delta_Time = Time::Get_Delta_Time();
-
-        RECT client_rect;
-        GetClientRect(Game_Window.Get_HWND(), &client_rect);
-        float client_width = (float)client_rect.right;
-        float client_height = (float)client_rect.bottom;
-        Input::Mouse_Position_X = ((float)mouse_Pt.x / client_width) * 800.0f;
-        Input::Mouse_Position_Y = 600.0f - (((float)mouse_Pt.y / client_height) * 600.0f);
+        System_Utility::Update_Logical_Mouse_Position(Game_Window.Get_HWND(), 800.0f, 600.0f);
         player.Update_Logic(Delta_Time, Game_World);
         Main_Camera.Object_Follow(player);
 
