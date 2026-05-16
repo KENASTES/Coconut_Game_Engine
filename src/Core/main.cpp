@@ -141,10 +141,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
                 obj.Update_Model_Matrix();
                 obj.Draw(sprite_Renderer, Shader_Program);
             }
-        }
 
-        player.Update_Model_Matrix();
-        player.Draw(sprite_Renderer, Shader_Program);
+            player.Update_Model_Matrix();
+            player.Draw(sprite_Renderer, Shader_Program);
+        }
 
         // GLint modelLocation = glGetUniformLocation(Shader_Program, "u_Model");
 
