@@ -17,6 +17,7 @@
 #include "UI_Element.h"
 #include "System_Utility.h"
 #include "Asset_Loader.h"
+#include "Game_State.h"
 
 Window_Interaction Game_Window;
 
@@ -83,8 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         ScreenToClient(Game_Window.Get_HWND(), &mouse_Pt);
         double Delta_Time = Time::Get_Delta_Time();
         System_Utility::Update_Logical_Mouse_Position(Game_Window.Get_HWND(), 800.0f, 600.0f);
-        player.Update_Logic(Delta_Time, Game_World);
-        Main_Camera.Object_Follow(player);
 
         if (Test_Button.Is_Mouse_Clicked(Input::Mouse_Position_X, Input::Mouse_Position_Y))
         {
@@ -109,28 +108,45 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(Shader_Program);
 
-        float orthoMatrix[16];
-        Main_Camera.Get_Projection_Matrix(orthoMatrix);
-
-        GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
-        glUniformMatrix4fv(projLocation, 1, GL_FALSE, orthoMatrix);
-
-        for (auto &obj : Game_World)
+        if (Game_Engine_State::Current_State == GameState::MAIN_MENU)
         {
-            obj.Update_Model_Matrix();
-            obj.Draw(sprite_Renderer, Shader_Program);
+            if (Test_Button.Is_Mouse_Clicked(Input::Mouse_Position_X, Input::Mouse_Position_Y) && Input::Is_Mouse_Left_Button_Clicked())
+            {
+                Game_Engine_State::Current_State = GameState::PLAYING;
+                Time::Update();
+            }
+
+            float UI_Projection_Matrix[16];
+            Render_Math::Create_Orthographic_Matrix(UI_Projection_Matrix, 0.0f, 800.0f, 0.0f, 600.0f);
+            GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
+            glUniformMatrix4fv(projLocation, 1, GL_FALSE, UI_Projection_Matrix);
+
+            Test_Button.Update_UI_Matrix();
+            Test_Button.UI_Draw(sprite_Renderer, Shader_Program);
+        }
+        else if (Game_Engine_State::Current_State == GameState::PLAYING)
+        {
+            Time::Update();
+
+            player.Update_Logic(Delta_Time, Game_World);
+            Main_Camera.Object_Follow(player);
+            float orthoMatrix[16];
+            Main_Camera.Get_Projection_Matrix(orthoMatrix);
+            GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
+
+            glUniformMatrix4fv(projLocation, 1, GL_FALSE, orthoMatrix);
+
+            for (auto &obj : Game_World)
+            {
+                obj.Update_Model_Matrix();
+                obj.Draw(sprite_Renderer, Shader_Program);
+            }
         }
 
         player.Update_Model_Matrix();
         player.Draw(sprite_Renderer, Shader_Program);
 
-        float UI_Projection_Matrix[16];
-        Render_Math::Create_Orthographic_Matrix(UI_Projection_Matrix, 0.0f, 800.0f, 0.0f, 600.0f);
-
-        GLint modelLocation = glGetUniformLocation(Shader_Program, "u_Model");
-        glUniformMatrix4fv(projLocation, 1, GL_FALSE, UI_Projection_Matrix);
-
-        Test_Button.UI_Draw(sprite_Renderer, Shader_Program);
+        // GLint modelLocation = glGetUniformLocation(Shader_Program, "u_Model");
 
         Game_Window.Swap_Buffers();
     }
