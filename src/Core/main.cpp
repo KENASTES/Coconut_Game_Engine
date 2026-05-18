@@ -78,8 +78,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
     while (Game_Window.Process_Messages())
     {
-        Time::Update();
         POINT mouse_Pt;
+        Time::Update();
         GetCursorPos(&mouse_Pt);
         ScreenToClient(Game_Window.Get_HWND(), &mouse_Pt);
         double Delta_Time = Time::Get_Delta_Time();
@@ -113,7 +113,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
             if (Test_Button.Is_Mouse_Clicked(Input::Mouse_Position_X, Input::Mouse_Position_Y) && Input::Is_Mouse_Left_Button_Clicked())
             {
                 Game_Engine_State::Current_State = GameState::PLAYING;
-                Time::Update();
             }
 
             float UI_Projection_Matrix[16];
@@ -126,7 +125,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         }
         else if (Game_Engine_State::Current_State == GameState::PLAYING)
         {
-            Time::Update();
 
             player.Update_Logic(Delta_Time, Game_World);
             Main_Camera.Object_Follow(player);
