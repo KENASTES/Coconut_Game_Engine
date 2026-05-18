@@ -2,7 +2,6 @@
 #define INPUT_H
 
 #include <windows.h>
-#include <cstdint>
 
 class Input {
     public:

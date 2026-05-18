@@ -1,6 +1,5 @@
 #include <Input.h>
 #include <windows.h>
-#include <cstdint>
 
 HWND Input::Target_Window = NULL;
 bool Input::Keys_State[256] = {false};
@@ -9,7 +8,7 @@ float Input::Mouse_Position_X = 0.0f;
 float Input::Mouse_Position_Y = 0.0f;
 
 void Input::Update() {
-    for (uint8_t i = 0; i < 255; i ++) {
+    for (int i = 0; i < 255; i ++) {
         Previous_Keys_State[i] = (GetAsyncKeyState(i) & 0x8000) != 0;
     }
 }
