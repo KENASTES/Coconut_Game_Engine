@@ -40,13 +40,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     Asset_Loader::Load_Initial_Assets(Shader_Program);
 
     Player player;
-    std::vector<Game_Object> Game_World;
+    std::vector<std::unique_ptr<Game_Object>> Game_World;
 
     player.Sprite = Resource_Manager::Get_Texture("player");
     UI_Element Test_Button(50.0f, 50.0f, 100.0f, 50.0f, Resource_Manager::Get_Texture("box"));
-    Game_World.push_back(Game_Object(200.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
-    Game_World.push_back(Game_Object(300.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
-    Game_World.push_back(Game_Object(400.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
+    Game_World.push_back(std::make_unique<Game_Object>(200.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
+    Game_World.push_back(std::make_unique<Game_Object>(300.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
+    Game_World.push_back(std::make_unique<Game_Object>(400.0f, 100.0f, 50.0f, 50.0f, 0.0f, Resource_Manager::Get_Texture("box")));
 
     Sprite_Renderer sprite_Renderer;
 
@@ -80,6 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     {
         POINT mouse_Pt;
         Time::Update();
+        Input::Update();
         GetCursorPos(&mouse_Pt);
         ScreenToClient(Game_Window.Get_HWND(), &mouse_Pt);
         double Delta_Time = Time::Get_Delta_Time();
@@ -128,6 +129,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
             player.Update_Logic(Delta_Time, Game_World);
             Main_Camera.Object_Follow(player);
+
             float orthoMatrix[16];
             Main_Camera.Get_Projection_Matrix(orthoMatrix);
             GLint projLocation = glGetUniformLocation(Shader_Program, "u_Projection");
@@ -136,16 +138,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
 
             for (auto &obj : Game_World)
             {
-                obj.Update_Model_Matrix();
-                obj.Draw(sprite_Renderer, Shader_Program);
+                obj->Update_Model_Matrix();
+                obj->Draw(sprite_Renderer, Shader_Program);
             }
 
             player.Update_Model_Matrix();
             player.Draw(sprite_Renderer, Shader_Program);
         }
-
-        // GLint modelLocation = glGetUniformLocation(Shader_Program, "u_Model");
-
+        
         Game_Window.Swap_Buffers();
     }
     return 0;

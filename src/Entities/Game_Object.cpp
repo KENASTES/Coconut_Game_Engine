@@ -29,3 +29,7 @@ void Game_Object::Draw(Sprite_Renderer& renderer, GLuint shader_program) {
     glUniform1i(glGetUniformLocation(shader_program, "u_Texture"), 0);
     renderer.Draw();
 }
+
+void Game_Object::On_Interaction(){
+    
+}

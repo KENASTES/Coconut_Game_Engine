@@ -1,6 +1,8 @@
 #ifndef GAME_STATE_H
 #define GAME_STATE_H
 
+#include <cstdint>
+
 enum class GameState : std::uint8_t {
     MAIN_MENU,
     PLAYING,

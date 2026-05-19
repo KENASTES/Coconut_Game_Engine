@@ -12,7 +12,7 @@ Player::Player() : Game_Object()
     this->Height = 100.0f;
 }
 
-void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_World)
+void Player::Update_Logic(double Delta_Time, std::vector<std::unique_ptr<Game_Object>>& Game_World)
 {
     float Old_Position_Y = Position_Y;
 
@@ -24,7 +24,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
     for (auto &obj : Game_World)
     {
 
-        if (this->Check_Collision(obj)) 
+        if (this->Check_Collision(*obj)) 
         {
             Position_Y = Old_Position_Y;
             break;
@@ -40,7 +40,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
 
     for (auto &obj : Game_World)
     {
-        if (this->Check_Collision(obj))
+        if (this->Check_Collision(*obj))
         {
             Position_X = Old_Position_X;
             break;
@@ -48,7 +48,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
     }
 
     if (Input::Is_Key_Just_Pressed(0x46)) {
-        float Interaction_Radius 80.0f;
+        float Interaction_Radius = 80.0f;
         float Pos_X = Position_X + (Width / 2.0f);
         float Pos_Y = Position_Y + (Height / 2.0f);
 
@@ -59,7 +59,7 @@ void Player::Update_Logic(double Delta_Time, std::vector<Game_Object>& Game_Worl
                 float Interacable_Distance = std::sqrt(std::pow(Object_X_Position - Pos_X, 2) + std::pow(Object_Y_Position - Pos_Y, 2));
 
                 if (Interacable_Distance <= Interaction_Radius) {
-                    obj.On_Interaction();
+                    obj->On_Interaction();
                     break;
                 }
             }
